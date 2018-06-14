@@ -1,35 +1,33 @@
 pragma solidity ^0.4.23;
 
-import "./Ownable.sol";
+contract CarFactory {
 
-contract CarFactory is Ownable {
-
-    event NewCar(string brand, string model, uint64 price);
-    event CarBought(uint carId);
     struct Car {
-        string brand;
-        string model;
+        uint8 brand;
         uint64 price;
     }
 
     Car[] public cars;
-    mapping (uint => address) public carToOwner;
-    mapping (address => uint) ownerCarCount;
+    mapping (uint => address) private carToOwner;
 
-    function publishNewCar(string _brand, string _model, uint64 _price) public {
-        require(ownerCarCount[msg.sender] == 0);
-        uint id = cars.push(Car(_brand, _model, _price)) - 1;
-        carToOwner[id] = msg.sender;
-        ownerCarCount[msg.sender]++;
-        emit NewCar(_brand, _model, _price);
+    constructor() public {
     }
 
-    function buyCar(uint carId) public {
-        require(ownerCarCount[msg.sender] == 0);
-        ownerCarCount[carToOwner[carId]]--;
-        ownerCarCount[msg.sender]++;
-        carToOwner[carId] = msg.sender;
-        emit CarBought(carId);
+    function publishNewCar(uint8 _brand, uint64 _price) public {
+        uint id = cars.push(Car(_brand, _price));
+        carToOwner[id] = msg.sender;
+    }
+
+    function buyCar(uint _carId) public {
+        carToOwner[_carId] = msg.sender;
+    }
+
+    function getCar(uint _carId) public view returns(uint8, uint64) {
+        return (cars[_carId].brand, cars[_carId].price);
+    }
+
+    function getTotalCars() public view returns(uint) {
+        return(cars.length);
     }
 
 }
