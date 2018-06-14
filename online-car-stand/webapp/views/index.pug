@@ -1,0 +1,21 @@
+doctype html
+html(lang='en')
+    head
+        title Jade
+    body
+        h1 Publish new car
+        #container.col
+            div#publish
+            form(action="/publish" method="post")
+                input(type="text" name="brand")
+                input(type="text" name="price")
+                input(type='submit' value='publish')
+
+        h1 List of cars
+            each carInfo in carsFromBE
+                div#carBox
+                    p= carInfo.model
+                    form(action="/buy" method="post")
+                        input(type="hidden" value=carInfo.id name="id")
+                        input(type='submit' value='buy')
+
