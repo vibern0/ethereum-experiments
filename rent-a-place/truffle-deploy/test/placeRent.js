@@ -4,8 +4,6 @@ contract('PlaceRent', function (accounts) {
     it("should rent a place", function () {
         return PlaceRent.deployed().then(function (instance) {
             return instance.rentPlace(0, 55, 66, {from: accounts[0]});
-        }).then(function (published) {
-            console.log(published);
         });
     });
     
@@ -14,7 +12,8 @@ contract('PlaceRent', function (accounts) {
             return instance.getRent(0);
         }).then(function (rentResult) {
             var dataResult = rentResult;
-            console.log("init: " + dataResult[0] + " / end: " + dataResult[1]);
+            assert.equal(dataResult[0], 55);
+            assert.equal(dataResult[1], 66);
         });
     });
     
@@ -31,6 +30,24 @@ contract('PlaceRent', function (accounts) {
                     assert.equal(rentInfo[0].toNumber(), values[value.toNumber()]);
                 });
             });
+        });
+    });
+    
+    it("should cancel a rent", function () {
+        return PlaceRent.deployed().then(function (instance) {
+            instance.cancelRent(0);
+        });
+    });
+    
+    it("rent should be canceled", function () {
+        return PlaceRent.deployed().then(function (instance) {
+            rent = instance;
+            return instance.isValidRent(0);
+        }).then(function (published) {
+            assert.equal(published, false);
+            return rent.isValidRent(1);
+        }).then(function (published) {
+            assert.equal(published, true);
         });
     });
 });
