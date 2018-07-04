@@ -4,8 +4,6 @@ contract('PlaceFactory', function (accounts) {
     it("should publish a place", function () {
         return PlaceFactory.deployed().then(function (instance) {
             return instance.publishNewPlace(8, "casa pequena", {from: accounts[0]});
-        }).then(function (published) {
-            console.log(published);
         });
     });
     
@@ -15,7 +13,8 @@ contract('PlaceFactory', function (accounts) {
         }).then(function (placeResult) {
             var dataResult = placeResult;
             var title = web3.toAscii(dataResult[1]);
-            console.log("price: " + dataResult[0] + " / title: " + title);
+            assert.equal(8, dataResult[0]);
+            assert.equal("casa pequena", title);
         });
     });
     
@@ -32,6 +31,29 @@ contract('PlaceFactory', function (accounts) {
                     assert.equal(placeInfo[0].toNumber(), values[value.toNumber()]);
                 });
             });
+        });
+    });
+    
+    it("should cancel a place", function () {
+        return PlaceFactory.deployed().then(function (instance) {
+            instance.cancelPlace(0, {from: accounts[0]});
+        });
+    });
+    
+    it("should be canceled", function () {
+        return PlaceFactory.deployed().then(function (instance) {
+            return instance.isPlaceAvailable(0);
+        }).then(function(available) {
+            assert.equal(available, false);
+        });
+    });
+    
+    it("should restore", function () {
+        return PlaceFactory.deployed().then(function (instance) {
+            instance.restorePlace(0, {from: accounts[0]});
+            return instance.isPlaceAvailable(0);
+        }).then(function(available) {
+            assert.equal(available, true);
         });
     });
 });
