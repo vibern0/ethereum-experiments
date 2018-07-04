@@ -25,6 +25,18 @@ contract PlaceFactory {
     function getPlace(uint _placeId) public view returns(uint, bytes) {
         return(places[_placeId].price, places[_placeId].title);
     }
+    
+    function cancelPlace(uint _placeId) public {
+        places[_placeId].isAvailable = false;
+    }
+    
+    function restorePlace(uint _placeId) public {
+        places[_placeId].isAvailable = true;
+    }
+
+    function isPlaceAvailable(uint _placeId) public view returns(bool) {
+        return(places[_placeId].isAvailable);
+    }
 
     function getPlacesByOwner(address _owner) external view returns(uint[]) {
         uint[] memory result = new uint[](ownerPlacesCounter[_owner]);
