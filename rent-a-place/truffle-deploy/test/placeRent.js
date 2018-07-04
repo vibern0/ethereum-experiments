@@ -35,7 +35,7 @@ contract('PlaceRent', function (accounts) {
     
     it("should cancel a rent", function () {
         return PlaceRent.deployed().then(function (instance) {
-            instance.cancelRent(0);
+            instance.cancelRent(0, {from: accounts[0]});
         });
     });
     
