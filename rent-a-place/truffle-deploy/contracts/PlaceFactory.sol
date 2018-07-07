@@ -17,7 +17,7 @@ contract PlaceFactory {
     }
 
     function publishNewPlace(uint8 _price, bytes _title) public returns(uint) {
-        uint id = places.push(Place(true, false, _price, _title));
+        uint id = places.push(Place(true, false, _price, _title))-1;
         placeToOwner[id] = msg.sender;
         ownerPlacesCounter[msg.sender]++;
         return id;
