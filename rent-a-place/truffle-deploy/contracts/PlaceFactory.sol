@@ -16,10 +16,11 @@ contract PlaceFactory {
     constructor() public {
     }
 
-    function publishNewPlace(uint8 _price, bytes _title) public {
+    function publishNewPlace(uint8 _price, bytes _title) public returns(uint) {
         uint id = places.push(Place(true, false, _price, _title));
         placeToOwner[id] = msg.sender;
         ownerPlacesCounter[msg.sender]++;
+        return id;
     }
 
     function getPlace(uint _placeId) public view returns(uint, bytes) {
@@ -38,7 +39,7 @@ contract PlaceFactory {
         return(places[_placeId].isAvailable);
     }
 
-    function getPlacesByOwner(address _owner) external view returns(uint[]) {
+    function getPlacesByOwner(address _owner) public view returns(uint[]) {
         uint[] memory result = new uint[](ownerPlacesCounter[_owner]);
         
         uint counter = 0;
